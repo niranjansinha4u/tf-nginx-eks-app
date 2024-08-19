@@ -1,6 +1,5 @@
 locals {
   name     = "eks-server"
-  eks_name = "my-eks-cluster"
 }
 
 # VPC
@@ -16,21 +15,23 @@ module "vpc" {
   single_nat_gateway   = true
 
   tags = {
-    "kubernates.io/cluster/${local.eks_name}" = "shared"
+    "kubernetes.io/cluster/my-eks-cluster" = "shared"
   }
   public_subnet_tags = {
-    "kubernates.io/cluster/${local.eks_name}" = "shared"
-    "kubernates.io/role/elb"                  = 1
+    "kubernetes.io/cluster/my-eks-cluster" = "shared"
+    "kubernetes.io/role/elb"               = 1
+
   }
   private_subnet_tags = {
-    "kubernates.io/cluster/${local.eks_name}" = "shared"
-    "kubernates.io/role/internal-elb"         = 1
+    "kubernetes.io/cluster/my-eks-cluster" = "shared"
+    "kubernetes.io/role/private_elb"       = 1
+
   }
 }
 # EKS
 module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
-  cluster_name                   = local.eks_name
+  cluster_name                   =  "my-eks-cluster"
   cluster_version                = "1.29"
   cluster_endpoint_public_access = true
   vpc_id                         = module.vpc.vpc_id
@@ -50,4 +51,12 @@ module "eks" {
       Terraform = true
     }
   }
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
 }
