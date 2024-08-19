@@ -1,0 +1,17 @@
+version: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+    tier: nginx-server
+spec:
+  selector:
+    app: nginx
+    tier: nginx-server
+  ports:
+    - name: http
+      protocol: tcp
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
