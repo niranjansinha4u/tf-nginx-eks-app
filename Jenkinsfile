@@ -68,8 +68,8 @@ pipeline {
                 script{
                     dir('EKS/ConfigurationFiles') {
                         sh 'aws eks update-kubeconfig --name my-eks-cluster'
-                        sh 'kubectl apply -f deployment.yaml --validate=false'
-                        sh 'kubectl apply -f service.yaml --validate=false'
+                        sh 'sudo kubectl apply -f deployment.yaml'
+                        sh 'sudo kubectl apply -f service.yaml'
                     }
                 }
             }
